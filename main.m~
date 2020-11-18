@@ -37,7 +37,7 @@ neurons = [32,64,128];
 % lr_rate = 0.1;
 % mc_rate = 0.9;
 lr_rate = [0.1,0.4,0.7];
-% mc_rate = [0.6,0.75,0.9];
+mc_rate = [0.6,0.75,0.9];
 perf_store = [];
 
 count = 0;
@@ -68,32 +68,7 @@ for i = neurons
 end 
 %% find the ideal parameter with smallest MSE
 [minim,idx] = min(Data(:,4));
-ideal_param = Data(idx,:)
-
-%%
-
-% build the NN
-nhidden = 32; %number of hidden layers
-net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
-% set the hyperparameter (epochs, learning rate)
-net.trainParam.epochs = 500; %number of training epochs
-net.trainParam.lr = 0.1;
-net.trainParam.mc = 0.7;
-
-% train a neural network
-[net,tr] = train(net,data_tr,target_tr);
-% show network
-
-% view(net);
-
-% predict the value
-y_predict = sim(net,data_ts);
-Y_predict = mapminmax('reverse',y_predict,y_output);
-
-%% Calculate the performance
-% calculate the MSE
-perf = perform(net, y_test, Y_predict)
-
+ideal_param = Data(idx,:);
 
 %% watch the distribution of predict density and y_test density
 num1 = vec2ind(Y_predict); % Predicted groups

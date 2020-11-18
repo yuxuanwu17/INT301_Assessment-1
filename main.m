@@ -68,23 +68,23 @@ for i = neurons
 end 
 %% find the ideal parameter with smallest MSE
 [minim,idx] = min(Data(:,4));
-ideal_param = Data(idx,:)
+ideal_param = Data(idx,:);
 
-%%
+%% Based on the previous returned hyperparameter to train the new model
 
 % build the NN
-nhidden = 32; %number of hidden layers
+nhidden = ideal_param(1); %number of hidden layers
 net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
 % set the hyperparameter (epochs, learning rate)
-net.trainParam.epochs = 500; %number of training epochs
-net.trainParam.lr = 0.1;
-net.trainParam.mc = 0.7;
+net.trainParam.epochs = 1000; %number of training epochs
+net.trainParam.lr = ideal_param(2);
+net.trainParam.mc = ideal_param(3);
 
 % train a neural network
 [net,tr] = train(net,data_tr,target_tr);
 % show network
 
-% view(net);
+view(net);
 
 % predict the value
 y_predict = sim(net,data_ts);
