@@ -34,12 +34,12 @@ target_ts = y_test;
 
 % seperate the value 
 neurons = [32,64,128];
-% lr_rate = 0.1;
+lr_rate = 0.1;
 mc_rate = 0.9;
-lr_rate = [0.1,0.4,0.7];
+% lr_rate = [0.1,0.4,0.7];
 % mc_rate = [0.6,0.75,0.9];
 perf_store = [];
-count = 0
+
 for i = neurons 
     for j = lr_rate
         for k = mc_rate
@@ -56,13 +56,11 @@ for i = neurons
             y_predict = sim(net,data_ts);
             Y_predict = mapminmax('reverse',y_predict,y_output);
             perf = perform(net, y_test, Y_predict);
-            if count == 0
-                perf_store = perf;
-            else 
-            perf_store(end+1) = perf;
-            end 
-        end 
+            perf_store(end+1) = perf
             fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
+            end 
+        
+            
         end 
     end 
 end 

@@ -39,8 +39,7 @@ mc_rate = 0.9;
 % lr_rate = [0.1,0.4,0.7];
 % mc_rate = [0.6,0.75,0.9];
 perf_store = [];
-count = 0;
-minim = [];
+
 for i = neurons 
     for j = lr_rate
         for k = mc_rate
@@ -48,7 +47,7 @@ for i = neurons
             nhidden = i; %number of hidden layers
             net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
             % set the hyperparameter (epochs, learning rate)
-            net.trainParam.epochs = 500; %number of training epochs
+            net.trainParam.epochs = 100; %number of training epochs
             net.trainParam.lr = j;
             net.trainParam.mc = k;
             % train a neural network
@@ -57,21 +56,9 @@ for i = neurons
             y_predict = sim(net,data_ts);
             Y_predict = mapminmax('reverse',y_predict,y_output);
             perf = perform(net, y_test, Y_predict);
-            if count == 0
-                perf_store = perf;
-                minim = perf;
-                count = count + 1;
-                fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
-            else 
-                perf_store(end+1) = perf;
-                if perf < minim;
-                    minim = perf;
-                end
-                count = count + 1;
-                fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
-            end 
+            perf_store(end+1) = perf;
+            fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
         
-            
         end 
     end 
 end 
@@ -80,17 +67,6 @@ end
 perf_store
 min(perf_store)
 
-%%
-minim=[];
-for i = perf_store
-    minim = perf_store(1);
-    if i < minim
-        minim = i;
-    end 
-    
-end
-minim
-min(minim)
 %%
 
 % build the NN
