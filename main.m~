@@ -34,12 +34,13 @@ target_ts = y_test;
 
 % seperate the value 
 neurons = [32,64,128];
-lr_rate = 0.1;
-mc_rate = 0.9;
-% lr_rate = [0.1,0.4,0.7];
+% lr_rate = 0.1;
+% mc_rate = 0.9;
+lr_rate = [0.1,0.4,0.7];
 % mc_rate = [0.6,0.75,0.9];
 perf_store = [];
 
+count = 0;
 for i = neurons 
     for j = lr_rate
         for k = mc_rate
@@ -47,7 +48,7 @@ for i = neurons
             nhidden = i; %number of hidden layers
             net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
             % set the hyperparameter (epochs, learning rate)
-            net.trainParam.epochs = 500; %number of training epochs
+            net.trainParam.epochs = 1000; %number of training epochs
             net.trainParam.lr = j;
             net.trainParam.mc = k;
             % train a neural network
@@ -56,30 +57,19 @@ for i = neurons
             y_predict = sim(net,data_ts);
             Y_predict = mapminmax('reverse',y_predict,y_output);
             perf = perform(net, y_test, Y_predict);
-            perf_store(end+1) = perf
+            perf_store(end+1) = perf;
+            count = count + 1 ;
             fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
-            end 
+            A(1,:)=[i,j,k,perf];
+            Data(count,:) = A(1,:);
         
-            
         end 
     end 
 end 
-%%
-% return the min value
-perf_store
-min(perf_store)
+%% find the ideal parameter with smallest MSE
+[minim,idx] = min(Data(:,4));
+ideal_param = Data(idx,:)
 
-%%
-minim=[];
-for i = perf_store
-    minim = perf_store(1);
-    if i < minim
-        minim = i;
-    end 
-    
-end
-minim
-min(minim)
 %%
 
 % build the NN
