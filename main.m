@@ -48,12 +48,13 @@ y_predict = sim(net,data_ts);
 Y_predict = mapminmax('reverse',y_predict,y_output);
 
 %% Calculate the performance
-
+% calculate the MSE
+perf = perform(net, y_test, Y_predict)
 
 
 %% watch the distribution of predict density and y_test density
-num1 = vec2ind(Y_predict);
-num2 = vec2ind(y_test)
+num1 = vec2ind(Y_predict); % Predicted groups
+num2 = vec2ind(y_test) % Known groups
 figure(1)
 [f,xi]=ksdensity(num1);
 plot(xi,f)
@@ -61,6 +62,14 @@ plot(xi,f)
 figure(2)
 [f,xi]=ksdensity(num2);
 plot(xi,f);
+
+%% Create the confusion matrix
+% size(num1,2)
+figure(4)
+C = confusionmat(num2,num1);
+confusionchart(C)
+
+
 
 %% evaluation of the model 
 figure(3)

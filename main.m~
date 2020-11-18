@@ -47,8 +47,9 @@ view(net);
 y_predict = sim(net,data_ts);
 Y_predict = mapminmax('reverse',y_predict,y_output);
 
-%% Calculate the pero
-
+%% Calculate the performance
+% calculate the MSE
+perf = perform(net, y_test, Y_predict)
 
 
 %% watch the distribution of predict density and y_test density
