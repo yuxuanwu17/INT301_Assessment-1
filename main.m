@@ -34,12 +34,13 @@ target_ts = y_test;
 
 % seperate the value 
 neurons = [32,64,128];
-% lr_rate = 0.1;
-% mc_rate = 0.6;
-
-lr_rate = [0.1,0.4,0.7];
-mc_rate = [0.6,0.75,0.9];
-
+lr_rate = 0.1;
+mc_rate = 0.9;
+% lr_rate = [0.1,0.4,0.7];
+% mc_rate = [0.6,0.75,0.9];
+perf_store = [];
+count = 0;
+minim = [];
 for i = neurons 
     for j = lr_rate
         for k = mc_rate
@@ -56,29 +57,40 @@ for i = neurons
             y_predict = sim(net,data_ts);
             Y_predict = mapminmax('reverse',y_predict,y_output);
             perf = perform(net, y_test, Y_predict);
-            fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
+            if count == 0
+                perf_store = perf;
+                minim = perf;
+                count = count + 1;
+                fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
+            else 
+                perf_store(end+1) = perf;
+                if perf < minim;
+                    minim = perf;
+                end
+                count = count + 1;
+                fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,j,k,perf);
+            end 
+        
+            
         end 
     end 
 end 
+%%
+% return the min value
+perf_store
+min(perf_store)
 
-
-
-
-% show network
-
-% view(net);
-
-
-% 
-% for i = neurons
-%     for j = lr_rate
-%         for k = mc_rate
-%             fprintf('value of i:%d\n,value of j:%2.1f\n,value of k:%3.1f\n',i,j,k)
-%         end
-% %         fprintf('value of j:%d\n',j)
-%     end
-% %     fprintf('value of i: %d\n', i);
-% end
+%%
+minim=[];
+for i = perf_store
+    minim = perf_store(1);
+    if i < minim
+        minim = i;
+    end 
+    
+end
+minim
+min(minim)
 %%
 
 % build the NN
