@@ -47,7 +47,7 @@ view(net);
 y_predict = sim(net,data_ts);
 Y_predict = mapminmax('reverse',y_predict,y_output);
 
-%% Calculate the performance
+%% Calculate the pero
 
 
 
