@@ -18,7 +18,7 @@ y_test = y(R(1:num_test),:);
 y_train = y(R,:);
 
 %% Normalization of training and testing data
-
+% 
 [X_train,X_output]=mapminmax(X_train',0,1);
 X_test = mapminmax('apply',X_test',X_output);
 [y_train,y_output]=mapminmax(y_train',0,1);
@@ -33,7 +33,7 @@ target_ts = y_test;
 %% train NN
 
 % seperate the value 
-neurons = [32,64,128];
+neurons = [8,16,32];
 % lr_rate = 0.1;
 % mc_rate = 0.9;
 lr_rate = [0.1,0.4,0.7];
@@ -48,7 +48,7 @@ for i = neurons
             nhidden = i; %number of hidden layers
             net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
             % set the hyperparameter (epochs, learning rate)
-            net.trainParam.epochs = 1000; %number of training epochs
+            net.trainParam.epochs = 10000; %number of training epochs
             net.trainParam.lr = j;
             net.trainParam.mc = k;
             % train a neural network
@@ -70,16 +70,41 @@ end
 [minim,idx] = min(Data(:,4));
 ideal_param = Data(idx,:);
 
+%% Based on the previous returned hyperparameter to train the new model
+
+% build the NN
+nhidden = ideal_param(1); %number of hidden layers
+net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
+% set the hyperparameter (epochs, learning rate)
+net.trainParam.epochs = 10000; %number of training epochs
+net.trainParam.lr = ideal_param(2);
+net.trainParam.mc = ideal_param(3);
+
+% train a neural network
+[net,tr] = train(net,data_tr,target_tr);
+% show network
+
+view(net);
+
+% predict the value
+y_predict = sim(net,data_ts);
+Y_predict = mapminmax('reverse',y_predict,y_output);
+
+%% Calculate the performance
+% calculate the MSE
+perf = perform(net, y_test, Y_predict)
+
+
 %% watch the distribution of predict density and y_test density
 num1 = vec2ind(Y_predict); % Predicted groups
 num2 = vec2ind(y_test); % Known groups
-% figure(1)
-% [f,xi]=ksdensity(num1);
-% plot(xi,f)
-% 
-% figure(2)
-% [f,xi]=ksdensity(num2);
-% plot(xi,f);
+figure(1)
+[f,xi]=ksdensity(num1);
+plot(xi,f)
+
+figure(2)
+[f,xi]=ksdensity(num2);
+plot(xi,f);
 
 %% Create the confusion matrix
 % size(num1,2)
