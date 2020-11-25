@@ -48,7 +48,7 @@ for i = neurons
             nhidden = i; %number of hidden layers
             net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
             % set the hyperparameter (epochs, learning rate)
-            net.trainParam.epochs = 10000; %number of training epochs
+            net.trainParam.epochs = 2000; %number of training epochs
             net.trainParam.lr = j;
             net.trainParam.mc = k;
             % train a neural network
@@ -68,7 +68,8 @@ for i = neurons
 end 
 %% find the ideal parameter with smallest MSE
 [minim,idx] = min(Data(:,4));
-ideal_param = Data(idx,:);
+minim
+ideal_param = Data(idx,:)
 
 %% Based on the previous returned hyperparameter to train the new model
 
@@ -76,7 +77,7 @@ ideal_param = Data(idx,:);
 nhidden = ideal_param(1); %number of hidden layers
 net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
 % set the hyperparameter (epochs, learning rate)
-net.trainParam.epochs = 10000; %number of training epochs
+net.trainParam.epochs = 2000; %number of training epochs
 net.trainParam.lr = ideal_param(2);
 net.trainParam.mc = ideal_param(3);
 
@@ -92,19 +93,19 @@ Y_predict = mapminmax('reverse',y_predict,y_output);
 
 %% Calculate the performance
 % calculate the MSE
-perf = perform(net, y_test, Y_predict)
+perf = perform(net, y_test, Y_predict);
 
 
 %% watch the distribution of predict density and y_test density
 num1 = vec2ind(Y_predict); % Predicted groups
 num2 = vec2ind(y_test); % Known groups
-figure(1)
-[f,xi]=ksdensity(num1);
-plot(xi,f)
-
-figure(2)
-[f,xi]=ksdensity(num2);
-plot(xi,f);
+% figure(1)
+% [f,xi]=ksdensity(num1);
+% plot(xi,f)
+% 
+% figure(2)
+% [f,x]=ksdensity(num2);
+% plot(xi,f);
 
 %% Create the confusion matrix
 % size(num1,2)
