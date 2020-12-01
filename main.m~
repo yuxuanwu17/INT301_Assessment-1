@@ -153,23 +153,22 @@ for i = neurons
     fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,fix_lr_mm(1),fix_lr_mm(2),perf);
 end
 %% Adjust the momentum and learning rate to see the influence of performance
-% fix the hidden units in 8 
+% fix the neruons into 8 
 neurons = 8;
 
-% change the monmentum and learning rate 
-lr_rate = [0.1,0.4];
-mc_rate = [0.6,0.75];
-perf_store=[];
+% change the monmentum and learning rate as [0.4,0.9]
+fix_lr_mm = [0.4,0.9,];
 
-for j = lr_rate 
-    for k = mc_rate
+perf_store=[];
+for i = neurons 
+
     % build the NN
-    nhidden = neurons; %number of hidden layers
+    nhidden = i; %number of hidden layers
     net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
     % set the hyperparameter (epochs, learning rate)
     net.trainParam.epochs = 2000; %number of training epochs
-    net.trainParam.lr = j;
-    net.trainParam.mc = k;
+    net.trainParam.lr = fix_lr_mm(1);
+    net.trainParam.mc = fix_lr_mm(2);
 
     % train a neural network
     [net,tr] = train(net,data_tr,target_tr);
@@ -178,7 +177,5 @@ for j = lr_rate
     Y_predict = mapminmax('reverse',y_predict,y_output);
     perf = perform(net, y_test, Y_predict);
     perf_store(end+1) = perf;
-    fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',neurons,j,k,perf);
-
-    end
+    fprintf('value of mse in neuron %d, learning rate %2.1f, momentum is %3.1f,is %6.4f\n ',i,fix_lr_mm(1),fix_lr_mm(2),perf);
 end
