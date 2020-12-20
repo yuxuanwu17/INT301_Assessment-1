@@ -48,7 +48,7 @@ for i = neurons
             nhidden = i; %number of hidden layers
             net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
             % set the hyperparameter (epochs, learning rate)
-            net.trainParam.epochs = 2000; %number of training epochs
+            net.trainParam.epochs = 10; %number of training epochs
             net.trainParam.lr = j;
             net.trainParam.mc = k;
             % train a neural network
@@ -77,7 +77,7 @@ ideal_param = Data(idx,:)
 nhidden = ideal_param(1); %number of hidden layers
 net=newff(data_tr,target_tr,[nhidden,nhidden,nhidden],{'logsig','logsig','logsig','logsig'},'traingd');
 % set the hyperparameter (epochs, learning rate)
-net.trainParam.epochs = 2000; %number of training epochs
+net.trainParam.epochs = 10; %number of training epochs
 net.trainParam.lr = ideal_param(2);
 net.trainParam.mc = ideal_param(3);
 
