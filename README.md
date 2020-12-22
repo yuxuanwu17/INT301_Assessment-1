@@ -1,6 +1,20 @@
 INT301_Assessment 1
+========
 
-This is the Coursework 1 for the INT301, Biocomputation.
+-Y4 SEM1 Sep-Feb, 2020
+
+**Module Code: INT301**
+
+**Module Title: Biocomputation**
+
+**Module Leader: Yang Sun**
+
+**Module Credits: 5.00**
+
+**Semester: SEM1**
+
+**Assessment 1: MLP task in image classification**
+
 ---
 
 The main purpose of this assessment was to use MLP to conduct classification.
